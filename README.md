@@ -1,73 +1,82 @@
-# React + TypeScript + Vite
+# 🇮🇳 TaxOptima
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> A premium, interactive tax comparator & optimizer for the Indian Income Tax Regimes (FY 2025-26 / AY 2026-27).
 
-Currently, two official plugins are available:
+TaxOptima is a high-performance, single-page client-side web application designed to help Indian taxpayers make informed decisions. It compares liabilities under the **Old Regime** against the default **New Regime** with real-time computations, custom demographic profiling, and advanced deduction break-even analysis.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ⚡️ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Side-by-Side Regime Comparison:** Dynamic calculations across both tax regimes with precise calculations for standard deductions, Section 87A rebate, and marginal relief rules.
+- **Break-Even Visualizer (Crossover Point):** Dynamically computes the exact threshold of deductions needed in the Old Regime using binary search to match the New Regime's liability.
+- **Specialized Demographics Support:** Predefined tax profiles with automatic application of deductions/exemptions:
+  - *Differently-Abled Employees* (Sec 80U deduction & Sec 10(14) transport exemptions)
+  - *Caregivers / Parents* (Sec 80DD disability maintenance deductions)
+  - *Widows & Pensioners* (Sec 57(iia) standard family pension deductions)
+  - *Defense Personnel* (Sec 10(18)/(19) gallantry and casualty pension exemptions)
+  - *Freelancers & Self-Employed* (Sec 80GG rent deductions)
+- **Vehicle Tax Integrations:**
+  - *EV Loan Interest (Sec 80EEB):* Deduct EV loan interest up to ₹1.5 Lakh under the Old Regime.
+  - *Vehicle TCS Tax Credit (Sec 206C(1F)):* Automatically computes a 1% TCS credit for motor vehicles purchased above ₹10 Lakhs, directly offsetting final Net Tax Payable under both regimes.
+- **HRA Calculator Modal:** A centered glassmorphic popup estimating HRA exemptions based on Basic+DA, rent, and city tier.
+- **Free Blueprint Export:** Instant export of a comprehensive 5-page planning blueprint PDF (complete with client copies, CA sign-off sheets, and actionable checklists) accompanied by a celebration confetti burst.
+- **Privacy First:** 100% client-side calculations. Your sensitive financial data never leaves your browser.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Framework:** React + TypeScript + Vite
+- **Styling:** Custom Vanilla CSS (featuring glassmorphism, responsive grid layouts, and smooth micro-animations)
+- **Visuals:** Lightweight, zero-dependency inline SVGs and custom gauge meters
+- **Export:** Dynamic loading of `html2pdf.js` and `canvas-confetti` to optimize initial bundle size
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚀 Getting Started
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Prerequisites
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Ensure you have [Node.js](https://nodejs.org) (v18+) installed.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Setup
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/kashek85/NewTaxCalculator-India.git
+   cd NewTaxCalculator-India
+   ```
+
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start Development Server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+4. **Production Build:**
+   ```bash
+   npm run build
+   ```
+   The production-ready assets will be generated in the `dist/` directory.
+
+---
+
+## 🌐 Free Deployment
+
+Deploy your own instance of TaxOptima in seconds:
+
+### Deploy via Vercel
+1. Log in to [Vercel](https://vercel.com).
+2. Click **Add New > Project** and import `kashek85/NewTaxCalculator-India`.
+3. Click **Deploy**. Vercel will automatically build and serve the app on a secure URL.
+
+### Deploy via Cloudflare Pages
+1. Go to **Workers & Pages > Pages > Connect to Git** in Cloudflare.
+2. Select this repository and set the framework preset to **Vite**.
+3. Click **Save and Deploy**.
