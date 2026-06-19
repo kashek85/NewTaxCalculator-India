@@ -11,12 +11,29 @@ export const OptimizerInsights: React.FC<OptimizerInsightsProps> = ({
   inputs,
   result
 }) => {
-  const { grossSalary, ded80c, ded80d, dedNps, ded80tta, age } = inputs;
+  const { grossSalary, ded80c, ded80d, dedNps, ded80tta, age, stcgEquities, ltcgEquities, unrealizedLosses } = inputs;
   const taxNew = result.newRegime.finalTax;
   const taxOld = result.oldRegime.finalTax;
 
   const getTips = (): RecommendationTip[] => {
     const tipsList: RecommendationTip[] = [];
+
+    // Tax-Loss Harvesting Recommendation (Pre-Season MVP Key Hook)
+    if (unrealizedLosses > 0 && (stcgEquities > 0 || ltcgEquities > 125000)) {
+      const offsetStcg = Math.min(stcgEquities, unrealizedLosses);
+      const remainingLosses = unrealizedLosses - offsetStcg;
+      const taxableLtcg = Math.max(0, ltcgEquities - 125000);
+      const offsetLtcg = Math.min(taxableLtcg, remainingLosses);
+      const potentialSavings = (offsetStcg * 0.20) + (offsetLtcg * 0.125);
+      
+      if (potentialSavings > 0) {
+        tipsList.push({
+          icon: 'fa-solid fa-seedling',
+          title: 'Tax-Loss Harvesting Opportunity',
+          text: `Offset your gains by selling underperforming assets carrying unrealized paper losses. Booking up to ${formatINR(offsetStcg + offsetLtcg)} of losses before March 31, 2026 will save you ${formatINR(potentialSavings)} in capital gains tax!`
+        });
+      }
+    }
 
     if (taxNew === 0 && grossSalary > 0) {
       tipsList.push({

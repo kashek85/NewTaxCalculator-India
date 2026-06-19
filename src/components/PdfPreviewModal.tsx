@@ -168,6 +168,20 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                           <td>{formatINR(result.oldRegime.taxableIncome)}</td>
                           <td>{formatINR(result.newRegime.taxableIncome)}</td>
                         </tr>
+                        {((result.oldRegime.stcgTax || 0) > 0 || (result.newRegime.stcgTax || 0) > 0) && (
+                          <tr>
+                            <td>STCG Tax (Sec 111A - 20%)</td>
+                            <td>{formatINR(result.oldRegime.stcgTax || 0)}</td>
+                            <td>{formatINR(result.newRegime.stcgTax || 0)}</td>
+                          </tr>
+                        )}
+                        {((result.oldRegime.ltcgTax || 0) > 0 || (result.newRegime.ltcgTax || 0) > 0) && (
+                          <tr>
+                            <td>LTCG Tax (Sec 112A - 12.5%)</td>
+                            <td>{formatINR(result.oldRegime.ltcgTax || 0)}</td>
+                            <td>{formatINR(result.newRegime.ltcgTax || 0)}</td>
+                          </tr>
+                        )}
                         {((result.oldRegime.tcsCredit || 0) > 0 || (result.newRegime.tcsCredit || 0) > 0) && (
                           <tr>
                             <td>Vehicle TCS Credit (Sec 206C(1F))</td>

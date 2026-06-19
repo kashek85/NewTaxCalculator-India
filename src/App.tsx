@@ -39,10 +39,20 @@ function App() {
   const [donations50, setDonations50] = useState<number>(0);
   const [sec80eeb, setSec80eeb] = useState<number>(0);
   const [vehiclePrice, setVehiclePrice] = useState<number>(0);
+  
+  // New Capital Gains & Loss Harvesting inputs state
+  const [stcgEquities, setStcgEquities] = useState<number>(0);
+  const [ltcgEquities, setLtcgEquities] = useState<number>(0);
+  const [unrealizedLosses, setUnrealizedLosses] = useState<number>(0);
+
+  // Document Ingestion Parsing Simulator state
+  const [isParsing, setIsParsing] = useState<boolean>(false);
+  const [parseMessage, setParseMessage] = useState<string>('');
 
   // UI state
   const [isHraWidgetOpen, setIsHraWidgetOpen] = useState<boolean>(false);
   const [isSpecialPanelOpen, setIsSpecialPanelOpen] = useState<boolean>(false);
+  const [isCapitalGainsOpen, setIsCapitalGainsOpen] = useState<boolean>(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
 
   const handleAgeChange = (profile: AgeProfile) => {
@@ -81,7 +91,10 @@ function App() {
     donations100,
     donations50,
     sec80eeb,
-    vehiclePrice
+    vehiclePrice,
+    stcgEquities,
+    ltcgEquities,
+    unrealizedLosses
   };
 
   const result = calculateTaxAll(inputs);
@@ -166,9 +179,51 @@ function App() {
     setDonations50(0);
     setSec80eeb(0);
     setVehiclePrice(0);
+    setStcgEquities(0);
+    setLtcgEquities(0);
+    setUnrealizedLosses(0);
     setIsHraWidgetOpen(false);
     setIsSpecialPanelOpen(false);
+    setIsCapitalGainsOpen(false);
     setIsPreviewOpen(false);
+  };
+
+  const handleFileUploadSimulate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setIsParsing(true);
+    setParseMessage(`Analyzing ${file.name}...`);
+    
+    setTimeout(() => {
+      setParseMessage("Extracting income ledgers & tax profiles...");
+      setTimeout(() => {
+        setGrossSalary(1850000);
+        setEmployerNps(185000);
+        setDed80c(150000);
+        setDed80d(25000);
+        setStcgEquities(150000);
+        setLtcgEquities(350000);
+        setUnrealizedLosses(180000);
+        setAge('general');
+        setIsParsing(false);
+        setParseMessage("Successfully parsed Form 16 & brokerage statements!");
+        
+        // Trigger confetti celebration!
+        import('canvas-confetti').then((confettiModule) => {
+          const confetti = confettiModule.default || confettiModule;
+          confetti({
+            particleCount: 80,
+            spread: 60,
+            origin: { y: 0.6 }
+          });
+        }).catch(err => console.warn('Confetti effect failed to fire:', err));
+        
+        // Reset file input value so same file can be uploaded again
+        e.target.value = '';
+
+        setTimeout(() => setParseMessage(''), 4000);
+      }, 1000);
+    }, 1000);
   };
 
   return (
@@ -179,8 +234,8 @@ function App() {
         <div className="header-logo">
           <span className="logo-icon"><i className="fa-solid fa-indian-rupee-sign"></i></span>
           <div className="logo-text">
-            <h1>TaxOptima</h1>
-            <span className="logo-tag">Indian Tax Comparator & Optimizer</span>
+            <h1>TaxOptima Harvest</h1>
+            <span className="logo-tag">AI-First Portfolio Tax Optimizer & Planner</span>
           </div>
         </div>
         <div className="header-badge">
@@ -192,6 +247,32 @@ function App() {
       {/* Main Workspace */}
       <main className="app-content">
         
+        {/* Pre-Season Banner */}
+        <div className="preseason-banner glass-panel" style={{
+          gridColumn: '1 / -1',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          padding: '12px 20px',
+          borderRadius: '12px',
+          background: 'rgba(59, 130, 246, 0.1)',
+          border: '1px solid rgba(59, 130, 246, 0.2)',
+          color: '#e2e8f0',
+          marginBottom: '15px',
+          fontSize: '14px',
+          flexWrap: 'wrap'
+        }}>
+          <span style={{ fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6' }}>
+            <i className="fa-solid fa-bullseye"></i>
+          </span>
+          <div style={{ flex: 1, minWidth: '280px' }}>
+            <strong>Pre-Season Optimization Window:</strong> The Financial Year 2025-26 closes on <strong>March 31, 2026</strong>. Drag & drop files below to auto-fill, optimize regimes, and harvest tax-loss savings before the deadline.
+          </div>
+          <div className="banner-tag" style={{ fontSize: '12px', padding: '4px 8px', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Pre-Season MVP
+          </div>
+        </div>
+
         {/* Left Panel: Inputs */}
         <section className="input-panel glass-panel">
           <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
@@ -215,6 +296,91 @@ function App() {
             >
               <i className="fa-solid fa-rotate-left"></i> Reset All
             </button>
+          </div>
+
+          {/* Drag & Drop Ingestion Simulator */}
+          <div className="upload-zone-wrapper" style={{ marginBottom: '20px' }}>
+            <div className="upload-zone" style={{
+              border: '2px dashed rgba(148, 163, 184, 0.3)',
+              borderRadius: '12px',
+              padding: '20px',
+              textAlign: 'center',
+              background: 'rgba(30, 41, 59, 0.3)',
+              transition: 'var(--transition-smooth)',
+              cursor: 'pointer',
+              position: 'relative'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+              e.currentTarget.style.background = 'rgba(30, 41, 59, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+              e.currentTarget.style.background = 'rgba(30, 41, 59, 0.3)';
+            }}>
+              {isParsing ? (
+                <div style={{ padding: '10px 0' }}>
+                  <div className="spinner" style={{
+                    width: '30px',
+                    height: '30px',
+                    border: '3px solid rgba(59, 130, 246, 0.2)',
+                    borderTopColor: '#3b82f6',
+                    borderRadius: '50%',
+                    margin: '0 auto 10px auto',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  <style>{`
+                    @keyframes spin {
+                      to { transform: rotate(360deg); }
+                    }
+                  `}</style>
+                  <p style={{ color: '#60a5fa', fontSize: '13.5px', fontWeight: 500, margin: 0 }}>{parseMessage}</p>
+                </div>
+              ) : parseMessage ? (
+                <div style={{ padding: '10px 0' }}>
+                  <span style={{ fontSize: '24px', color: '#10b981', display: 'block', marginBottom: '8px' }}>
+                    <i className="fa-solid fa-circle-check"></i>
+                  </span>
+                  <p style={{ color: '#34d399', fontSize: '13.5px', fontWeight: 500, margin: 0 }}>{parseMessage}</p>
+                </div>
+              ) : (
+                <div>
+                  <span style={{ fontSize: '24px', color: '#94a3b8', display: 'block', marginBottom: '8px' }}>
+                    <i className="fa-solid fa-cloud-arrow-up"></i>
+                  </span>
+                  <h4 style={{ color: '#e2e8f0', margin: '0 0 4px 0', fontSize: '14.5px' }}>Upload Tax Documents to Auto-Fill</h4>
+                  <p style={{ color: '#94a3b8', margin: '0 0 12px 0', fontSize: '12px' }}>
+                    Drag & drop Form 16, CAMS PDF, or Broker statements
+                  </p>
+                  <label className="upload-btn" style={{
+                    display: 'inline-block',
+                    background: 'rgba(59, 130, 246, 0.1)',
+                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                    color: '#60a5fa',
+                    padding: '6px 14px',
+                    borderRadius: '6px',
+                    fontSize: '12.5px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    transition: 'var(--transition-smooth)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(59, 130, 246, 0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)';
+                  }}>
+                    Choose File
+                    <input 
+                      type="file" 
+                      accept=".pdf,.xlsx,.csv,.xls" 
+                      onChange={handleFileUploadSimulate} 
+                      style={{ display: 'none' }} 
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Taxpayer Profile Section */}
@@ -649,6 +815,67 @@ function App() {
                   max={10000000}
                   step={100000}
                   labels={['₹0', '50L', '1 Cr (Max)']}
+                />
+
+              </div>
+            )}
+          </div>
+
+          {/* Capital Gains & Portfolio Harvest Section */}
+          <div className="form-section">
+            <div 
+              className="section-header-row clickable-header" 
+              onClick={() => setIsCapitalGainsOpen(!isCapitalGainsOpen)}
+              style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <h3 className="section-title">
+                <i className="fa-solid fa-chart-line"></i> Capital Gains &amp; Portfolio Harvest
+              </h3>
+              <span className="collapse-icon">
+                <i className={`fa-solid ${isCapitalGainsOpen ? 'fa-chevron-up' : 'fa-chevron-down'}`} style={{ color: 'var(--color-primary)' }}></i>
+              </span>
+            </div>
+
+            {isCapitalGainsOpen && (
+              <div className="special-panel-content" style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '22px' }}>
+                
+                {/* Short-Term Capital Gains (STCG) */}
+                <SliderInput
+                  id="stcg-equities"
+                  label="Short-Term Capital Gains (Sec 111A)"
+                  tooltip="Short-term capital gains on listed equity shares and equity-oriented mutual funds (taxed at 20%)."
+                  value={stcgEquities}
+                  onChange={setStcgEquities}
+                  min={0}
+                  max={1000000}
+                  step={10000}
+                  labels={['₹0', '5L', '10L (Max)']}
+                />
+
+                {/* Long-Term Capital Gains (LTCG) */}
+                <SliderInput
+                  id="ltcg-equities"
+                  label="Long-Term Capital Gains (Sec 112A)"
+                  tooltip="Long-term capital gains on listed equity shares. Taxed at 12.5% on gains exceeding ₹1.25 Lakhs per year."
+                  value={ltcgEquities}
+                  onChange={setLtcgEquities}
+                  min={0}
+                  max={2000000}
+                  step={20000}
+                  labels={['₹0', '10L', '20L (Max)']}
+                />
+
+                {/* Unrealized Portfolio Losses */}
+                <SliderInput
+                  id="unrealized-losses"
+                  label="Unrealized Portfolio Losses (For Harvesting)"
+                  tooltip="Paper losses currently in your portfolio. You can sell these assets before March 31st to book losses and offset capital gains tax."
+                  value={unrealizedLosses}
+                  onChange={setUnrealizedLosses}
+                  min={0}
+                  max={1000000}
+                  step={10000}
+                  labels={['₹0', '5L', '10L (Max)']}
                 />
 
               </div>

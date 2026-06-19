@@ -27,6 +27,9 @@ export interface TaxInputs {
   donations50: number;
   sec80eeb: number;
   vehiclePrice: number;
+  stcgEquities: number;
+  ltcgEquities: number;
+  unrealizedLosses: number;
 }
 
 export interface TaxBreakdown {
@@ -36,6 +39,8 @@ export interface TaxBreakdown {
   otherDeductions: number;
   taxableIncome: number;
   baseTax: number;
+  stcgTax: number;
+  ltcgTax: number;
   rebate: number;
   surcharge: number;
   marginalRelief: number;

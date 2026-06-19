@@ -209,7 +209,9 @@ export function calculateTaxAll(inputs: TaxInputs): TaxComparisonResult {
     donations100,
     donations50,
     sec80eeb,
-    vehiclePrice
+    vehiclePrice,
+    stcgEquities,
+    ltcgEquities
   } = inputs;
 
   // 1. Gross Salary Exemptions (Affects both regimes)
@@ -297,7 +299,12 @@ export function calculateTaxAll(inputs: TaxInputs): TaxComparisonResult {
   }
   const taxAfterRebateOld = Math.max(0, baseTaxOld - rebateOld);
 
-  const surOldResult = calculateSurchargeAndRelief(taxableOld, taxAfterRebateOld, 'old', age);
+  // Calculate Capital Gains tax
+  const stcgTax = (stcgEquities || 0) * 0.20;
+  const ltcgTax = Math.max(0, (ltcgEquities || 0) - 125000) * 0.125;
+  const baseWithCapGainsOld = taxAfterRebateOld + stcgTax + ltcgTax;
+
+  const surOldResult = calculateSurchargeAndRelief(taxableOld, baseWithCapGainsOld, 'old', age);
   const cessOld = surOldResult.finalTaxBeforeCess * 0.04;
   const rawTaxOld = surOldResult.finalTaxBeforeCess + cessOld;
 
@@ -325,8 +332,9 @@ export function calculateTaxAll(inputs: TaxInputs): TaxComparisonResult {
   }
 
   const taxAfterRebateNew = Math.max(0, baseTaxNew - rebateNew - rebateMarginalReliefNew);
+  const baseWithCapGainsNew = taxAfterRebateNew + stcgTax + ltcgTax;
 
-  const surNewResult = calculateSurchargeAndRelief(taxableNew, taxAfterRebateNew, 'new', age);
+  const surNewResult = calculateSurchargeAndRelief(taxableNew, baseWithCapGainsNew, 'new', age);
   const cessNew = surNewResult.finalTaxBeforeCess * 0.04;
   const rawTaxNew = surNewResult.finalTaxBeforeCess + cessNew;
   const finalTaxNew = Math.max(0, rawTaxNew - tcsCredit);
@@ -345,6 +353,8 @@ export function calculateTaxAll(inputs: TaxInputs): TaxComparisonResult {
     otherDeductions: restDeductionsOld,
     taxableIncome: taxableOld,
     baseTax: baseTaxOld,
+    stcgTax,
+    ltcgTax,
     rebate: rebateOld,
     surcharge: surOldResult.surcharge,
     marginalRelief: totalMROld,
@@ -361,6 +371,8 @@ export function calculateTaxAll(inputs: TaxInputs): TaxComparisonResult {
     otherDeductions: 0,
     taxableIncome: taxableNew,
     baseTax: baseTaxNew,
+    stcgTax,
+    ltcgTax,
     rebate: rebateNew,
     surcharge: surNewResult.surcharge,
     marginalRelief: totalMRNew,
@@ -377,7 +389,8 @@ export function calculateTaxAll(inputs: TaxInputs): TaxComparisonResult {
     let tempRebate = 0;
     if (tempTaxable <= 500000) tempRebate = tempBase;
     const tempTaxAfterRebate = Math.max(0, tempBase - tempRebate);
-    const tempSur = calculateSurchargeAndRelief(tempTaxable, tempTaxAfterRebate, 'old', age);
+    const tempBaseWithCG = tempTaxAfterRebate + stcgTax + ltcgTax;
+    const tempSur = calculateSurchargeAndRelief(tempTaxable, tempBaseWithCG, 'old', age);
     const tempCess = tempSur.finalTaxBeforeCess * 0.04;
     const tempFinalTax = tempSur.finalTaxBeforeCess + tempCess;
     return Math.max(0, tempFinalTax - tcsCredit);

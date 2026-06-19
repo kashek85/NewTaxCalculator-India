@@ -59,6 +59,20 @@ export const BreakdownTable: React.FC<BreakdownTableProps> = ({
             <td id="breakdown-rebate-old" className="minus-val">-{formatINR(oldBreakdown.rebate)}</td>
             <td id="breakdown-rebate-new" className="minus-val">-{formatINR(newBreakdown.rebate)}</td>
           </tr>
+          {((oldBreakdown.stcgTax || 0) > 0 || (newBreakdown.stcgTax || 0) > 0) && (
+            <tr>
+              <td>STCG Tax <span className="cell-note">(Sec 111A - 20%)</span></td>
+              <td>{formatINR(oldBreakdown.stcgTax || 0)}</td>
+              <td>{formatINR(newBreakdown.stcgTax || 0)}</td>
+            </tr>
+          )}
+          {((oldBreakdown.ltcgTax || 0) > 0 || (newBreakdown.ltcgTax || 0) > 0) && (
+            <tr>
+              <td>LTCG Tax <span className="cell-note">(Sec 112A - 12.5%)</span></td>
+              <td>{formatINR(oldBreakdown.ltcgTax || 0)}</td>
+              <td>{formatINR(newBreakdown.ltcgTax || 0)}</td>
+            </tr>
+          )}
           <tr>
             <td>Surcharge</td>
             <td id="breakdown-surcharge-old">{formatINR(oldBreakdown.surcharge)}</td>

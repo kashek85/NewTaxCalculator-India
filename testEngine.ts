@@ -14,7 +14,6 @@ const generalResult = calculateTaxAll({
   ded80tta: 30000,
   dedOther: 0,
   age: 'general',
-  // Advanced specialized inputs (default off)
   isDiffAbled: false,
   disabilityLevel: 'none',
   hasDisabledDependent: false,
@@ -25,7 +24,12 @@ const generalResult = calculateTaxAll({
   sec80eInterest: 0,
   sec80eeaInterest: 0,
   donations100: 0,
-  donations50: 0
+  donations50: 0,
+  sec80eeb: 0,
+  vehiclePrice: 0,
+  stcgEquities: 0,
+  ltcgEquities: 0,
+  unrealizedLosses: 0
 });
 console.log(`General Taxable Old: ${generalResult.oldRegime.taxableIncome} (Calculated Old Tax: ${generalResult.oldRegime.finalTax})`);
 
@@ -51,7 +55,12 @@ const seniorResult = calculateTaxAll({
   sec80eInterest: 0,
   sec80eeaInterest: 0,
   donations100: 0,
-  donations50: 0
+  donations50: 0,
+  sec80eeb: 0,
+  vehiclePrice: 0,
+  stcgEquities: 0,
+  ltcgEquities: 0,
+  unrealizedLosses: 0
 });
 console.log(`Senior Taxable Old: ${seniorResult.oldRegime.taxableIncome} (Calculated Old Tax: ${seniorResult.oldRegime.finalTax})`);
 
@@ -77,7 +86,12 @@ const generalResult15L = calculateTaxAll({
   sec80eInterest: 0,
   sec80eeaInterest: 0,
   donations100: 0,
-  donations50: 0
+  donations50: 0,
+  sec80eeb: 0,
+  vehiclePrice: 0,
+  stcgEquities: 0,
+  ltcgEquities: 0,
+  unrealizedLosses: 0
 });
 console.log(`Crossover Deductions needed for 15L Gross: ${generalResult15L.crossoverDeductions}`);
 console.log(`Calculated Monthly In-Hand for 15L (New Regime): ${generalResult15L.newRegime.monthlyTakeHome}`);
@@ -89,7 +103,7 @@ const freelancerResult = calculateTaxAll({
   ded80c: 100000,
   ded80d: 0,
   ded24b: 0,
-  dedHra: 0, // Sec 80GG requires HRA to be 0
+  dedHra: 0,
   dedNps: 0,
   ded80tta: 0,
   dedOther: 0,
@@ -100,15 +114,17 @@ const freelancerResult = calculateTaxAll({
   dependentDisabilityLevel: 'none',
   isDefenseExempt: false,
   familyPension: 0,
-  sec80ggRent: 120000, // Rent paid: 1.2L
+  sec80ggRent: 120000,
   sec80eInterest: 0,
   sec80eeaInterest: 0,
   donations100: 0,
-  donations50: 0
+  donations50: 0,
+  sec80eeb: 0,
+  vehiclePrice: 0,
+  stcgEquities: 0,
+  ltcgEquities: 0,
+  unrealizedLosses: 0
 });
-// ATI = 600k (gross) - 50k (std) - 100k (80c) = 450k.
-// 80GG is min of: 60k, 25% of ATI (112.5k), Rent (120k) - 10% of ATI (45k) = 75k.
-// min is 60,000. So otherDeductions = 100k (80c) + 60k (80gg) = 160k.
 console.log(`Freelancer Old Deductions: ${freelancerResult.oldRegime.otherDeductions}`);
 
 // 5. Differently-abled (Sec 80U & Transport Exemption) Test
@@ -123,7 +139,7 @@ const diffAbledResult = calculateTaxAll({
   ded80tta: 0,
   dedOther: 0,
   age: 'general',
-  isDiffAbled: true, // Transport exemption ₹38,400 & Sec 80U severe disability ₹125,000
+  isDiffAbled: true,
   disabilityLevel: 'severe',
   hasDisabledDependent: false,
   dependentDisabilityLevel: 'none',
@@ -133,10 +149,13 @@ const diffAbledResult = calculateTaxAll({
   sec80eInterest: 0,
   sec80eeaInterest: 0,
   donations100: 0,
-  donations50: 0
+  donations50: 0,
+  sec80eeb: 0,
+  vehiclePrice: 0,
+  stcgEquities: 0,
+  ltcgEquities: 0,
+  unrealizedLosses: 0
 });
-// Adjusted Gross = 800,000 - 38,400 = 761,600.
-// Taxable Old = 761.6k - 50k (std) - 125k (80U) = 586,600.
 console.log(`Differently-Abled Taxable Old: ${diffAbledResult.oldRegime.taxableIncome}`);
 
 // 6. Family Pension standard deductions (Sec 57(iia)) Test
@@ -156,15 +175,18 @@ const pensionerResult = calculateTaxAll({
   hasDisabledDependent: false,
   dependentDisabilityLevel: 'none',
   isDefenseExempt: false,
-  familyPension: 150000, // Pension: 1.5L
+  familyPension: 150000,
   sec80ggRent: 0,
   sec80eInterest: 0,
   sec80eeaInterest: 0,
   donations100: 0,
-  donations50: 0
+  donations50: 0,
+  sec80eeb: 0,
+  vehiclePrice: 0,
+  stcgEquities: 0,
+  ltcgEquities: 0,
+  unrealizedLosses: 0
 });
-// Pension Standard deduction: Old = min(150k/3, 15k) = 15k. Taxable old = 150k - 15k = 135k.
-// Pension Standard deduction: New = min(150k/3, 25k) = 25k. Taxable new = 150k - 25k = 125k.
 console.log(`Pensioner Taxable Old: ${pensionerResult.oldRegime.taxableIncome}`);
 console.log(`Pensioner Taxable New: ${pensionerResult.newRegime.taxableIncome}`);
 
@@ -191,10 +213,44 @@ const vehicleResult = calculateTaxAll({
   sec80eeaInterest: 0,
   donations100: 0,
   donations50: 0,
-  sec80eeb: 100000,   // EV loan interest: 1L
-  vehiclePrice: 3000000 // Vehicle price: 30L (1% TCS = 30k credit)
+  sec80eeb: 100000,
+  vehiclePrice: 3000000,
+  stcgEquities: 0,
+  ltcgEquities: 0,
+  unrealizedLosses: 0
 });
 console.log(`Vehicle Taxable Old: ${vehicleResult.oldRegime.taxableIncome} (Old Tax: ${vehicleResult.oldRegime.finalTax}, New Tax: ${vehicleResult.newRegime.finalTax})`);
+
+// 8. Capital Gains (Sec 111A & Sec 112A) Test
+const gainsResult = calculateTaxAll({
+  grossSalary: 1000000,
+  employerNps: 0,
+  ded80c: 150000,
+  ded80d: 0,
+  ded24b: 0,
+  dedHra: 0,
+  dedNps: 0,
+  ded80tta: 0,
+  dedOther: 0,
+  age: 'general',
+  isDiffAbled: false,
+  disabilityLevel: 'none',
+  hasDisabledDependent: false,
+  dependentDisabilityLevel: 'none',
+  isDefenseExempt: false,
+  familyPension: 0,
+  sec80ggRent: 0,
+  sec80eInterest: 0,
+  sec80eeaInterest: 0,
+  donations100: 0,
+  donations50: 0,
+  sec80eeb: 0,
+  vehiclePrice: 0,
+  stcgEquities: 100000, // 1L @ 20% = 20,000 tax
+  ltcgEquities: 225000, // 2.25L - 1.25L exemption = 1L taxable @ 12.5% = 12,500 tax
+  unrealizedLosses: 0
+});
+console.log(`Gains Old Tax: ${gainsResult.oldRegime.finalTax} (Expected: 109200)`);
 
 console.log("=== ALL REACT PORT TESTS COMPLETED ===");
 if (
@@ -208,7 +264,8 @@ if (
   pensionerResult.newRegime.taxableIncome === 125000 &&
   vehicleResult.oldRegime.taxableIncome === 1200000 &&
   vehicleResult.oldRegime.finalTax === 149400 &&
-  vehicleResult.newRegime.finalTax === 67500
+  vehicleResult.newRegime.finalTax === 67500 &&
+  gainsResult.oldRegime.finalTax === 109200
 ) {
   console.log("=== ALL ASSERTIONS PASSED SUCCESSFULLY ===");
 } else {
